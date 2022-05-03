@@ -1,13 +1,27 @@
-require("dotenv").config;
 const express = require("express");
-const res = require("express/lib/response");
+const mongoose = require("mongoose");
+require("dotenv").config();
+const bodyParser = require("body-parser");
+const cors = require("cors");
 const app = express();
-const port = process.env.SERVER_PORT;
 
-app.get("/", (req, res) => {
-  res.send("Hellow world");
+//import routes ---
+const authRoutes = require("./routes/auth");
+
+// use middleware ---
+app.use(bodyParser.json());
+app.use(cors());
+
+// use routes ---
+app.use("/api", authRoutes);
+
+// database connection ---
+mongoose.connect(process.env.SOILDB, {}).then(() => {
+  console.log("DB CONNECTED");
 });
 
+const port = process.env.SERVER_PORT;
+console.log(port);
 app.listen(port, () => {
   console.log(`Server: ${port} running...`);
 });
